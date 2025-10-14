@@ -46,6 +46,10 @@ upgrade: ## update the pip requirements files to use the latest releases satisfy
 	pip-compile --rebuild --upgrade -o requirements/ci.txt requirements/ci.in
 	pip-compile --rebuild --upgrade -o requirements/dev.txt requirements/dev.in
 
+	grep -e "^django==" requirements/test.txt > requirements/django52.txt
+	sed '/^[dD]jango==/d;' requirements/test.txt > requirements/test.tmp
+	mv requirements/test.tmp requirements/test.txt
+
 test-python: clean ## Run test suite.
 	$(TOX) pip install -r requirements/base.txt --exists-action w
 	$(TOX) coverage run --source="." -m pytest ./flow_control_xblock
